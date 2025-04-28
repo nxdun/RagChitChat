@@ -50,3 +50,7 @@ evaluation_results.png
 # OS specific
 .DS_Store
 Thumbs.db
+
+#privacy
+/data
+/processed_data
