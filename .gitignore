@@ -5,41 +5,15 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
 env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+venv/
+ENV/
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
 # Vector database files
-vector_db/
-
-# API keys and secrets
-*.pem
-
-# Virtual environment
-venv/
-ENV/
-
-# Evaluation results
-evaluation_results.csv
-evaluation_results.png
+chroma_db/
 
 # IDE files
 .idea/
@@ -51,6 +25,6 @@ evaluation_results.png
 .DS_Store
 Thumbs.db
 
-#privacy
+# Project specific
 /data
-/processed_data
+/processed
