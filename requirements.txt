@@ -1,0 +1,23 @@
+# Core RAG Framework
+haystack-ai
+
+# Vector DB
+chromadb
+
+# Local LLM
+ollama
+
+# Document Processing
+python-pptx
+pypdf
+unstructured
+
+# Terminal UI
+rich
+
+# Data processing
+numpy
+pandas
+
+# Utilities
+python-dotenv
