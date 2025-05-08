@@ -42,7 +42,7 @@ A powerful Retrieval Augmented Generation (RAG) chatbot designed specifically fo
   - Command system with help, history, and model management
   - Syntax highlighting and pretty printing
 
-## 📋 Project Structure
+## 📋 Project Structure(OOP Based)
 
 ```
 RagChitChat/
