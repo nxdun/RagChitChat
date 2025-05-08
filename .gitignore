@@ -29,3 +29,5 @@ Thumbs.db
 /data
 /processed
 .github
+/notebook/processed
+/notebook/data
