@@ -13,6 +13,8 @@ if project_root not in sys.path:
 
 from config import settings
 
+NO_CONTEXT_MESSAGE = "No relevant context information was found in the documents to answer this question."
+
 
 def get_rag_prompt(question: str, context: List[Dict[str, Any]]) -> str:
     """Generate an advanced RAG prompt with chain-of-thought reasoning
@@ -28,9 +30,15 @@ def get_rag_prompt(question: str, context: List[Dict[str, Any]]) -> str:
     context_text = format_context_documents(context)
     
     # Replace placeholders in the template
+    # Add instruction for out-of-context handling
     prompt = settings.RAG_PROMPT_TEMPLATE.format(
         context=context_text,
         question=question
+    ) + (
+        "\n\nImportant: Answer based *only* on the provided context. "
+        "If the answer cannot be found in the context, state that "
+        f"'{NO_CONTEXT_MESSAGE}' or that the information is not available in the provided documents.EXPLICITLY SEND THIS REPLY 'NO RELEVANT DATA FOUND TO REPLY'"
+        "When using information from the context, cite the document and page/slide number (e.g., Document 1: filename.pdf)."
     )
     
     # Add few-shot examples if we have space
@@ -57,7 +65,7 @@ def get_reflection_prompt(question: str, initial_answer: str, context: List[Dict
     # Create evaluation criteria questions
     evaluation_questions = "\n".join([
         f"- {criterion}: {question}" 
-        for criterion, question in settings.SELF_EVALUATION_CRITERIA.items()
+        for criterion, question_text in settings.SELF_EVALUATION_CRITERIA.items()
     ])
     
     # Create the reflection prompt
@@ -71,12 +79,17 @@ Your previous response:
 
 Please reflect on your response using these criteria:
 {evaluation_questions}
+- Citation: Does the response properly cite sources and page/slide numbers from the context when information is used (e.g., Document 1: filename.pdf, Page X)?
 
-First, identify any issues with your previous response.
+First, identify any issues with your previous response, including missing citations.
 Then, provide an improved version that addresses these issues while maintaining academic accuracy.
 Base your improved answer strictly on this context information:
 
 {context_text}
+
+Important: Your improved answer must be based *only* on the provided context. 
+If the answer cannot be found in the context, state that the information is not available in the provided documents.
+Ensure all information taken from the context is properly cited with document and page/slide number.
 
 Begin your response with "## Self-Reflection" followed by your analysis, then "## Improved Answer" with your revised response.
     """
@@ -170,6 +183,9 @@ Please answer this question:
 
 {format_instruction}
 
+Important: Answer based *only* on the provided context. 
+If the answer cannot be found in the context, state that the information is not available in the provided documents.
+When using information from the context, cite the specific document and page/slide number (e.g., "According to Document 1: lecture_notes.pdf, Page 5...").
 Be concise but comprehensive, and ensure all information is accurate according to the provided context.
     """
     
@@ -186,7 +202,7 @@ def format_context_documents(context: List[Dict[str, Any]]) -> str:
         Formatted context text
     """
     if not context:
-        return "No relevant context information available."
+        return NO_CONTEXT_MESSAGE
     
     context_sections = []
     

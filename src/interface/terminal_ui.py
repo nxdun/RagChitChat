@@ -112,13 +112,16 @@ class TerminalUI:
             self.show_system_info()
         
         self.console.print()
-        self.console.print(Panel(
+        self.console.print(Align(
+            Panel(
             "[bold]Ask me anything about Current Trends in Software Engineering![/]\n\n"
             "I can answer questions about CTSE lecture content, explain concepts,\n"
             "and help you understand course materials better.",
             title=f"[{self.theme['secondary']}]How to use RagChitChat[/]",
             border_style=self.theme["secondary"],
             expand=False
+            ),
+            align="center"
         ))
         
         self.console.print(Align(

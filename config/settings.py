@@ -3,10 +3,12 @@ Configuration settings for RagChitChat
 """
 import os
 import logging
-
 # Disable Haystack telemetry
 os.environ["HAYSTACK_TELEMETRY_ENABLED"] = "False"
-logging.getLogger("haystack.telemetry").setLevel(logging.ERROR)
+
+for logger_name in logging.root.manager.loggerDict:
+    logging.getLogger(logger_name).setLevel(logging.CRITICAL)
+# Disable Haystack telemetry via environment variable
 
 # Paths configuration
 DATA_DIR = os.environ.get("RAGCHITCHAT_DATA_DIR", "data")
@@ -79,21 +81,24 @@ Your answer should:
 - Include specific examples when helpful
 - Use markdown formatting for clarity (headings, bullet points, code blocks)
 - Cite specific lecture content when possible
-- Be factually accurate based only on the provided context
+- Be factually accurate based *only* on the provided context
 
 If the provided context doesn't contain sufficient information to answer the question completely:
-1. Clearly state what information is not available in your knowledge base
-2. Provide what partial information you can based on the available context
-3. Suggest related topics you can address based on the available lecture notes
+- State *only* that the information is not available in the provided documents.
+- Do *not* attempt to answer using external knowledge.
+- Do *not* suggest related topics or provide any information not found in the context.
 
-Response format:
+Response format (if context is sufficient):
 ---
 ## [Direct Answer to Question]
 [Detailed explanation with structured formatting]
 
 [Examples or elaboration as needed]
+---
 
-[If applicable: "Note: The lecture notes do not provide complete information about X, but I can tell you that..."]
+Response format (if context is insufficient):
+---
+The information required to answer your question is not available in the provided CTSE lecture notes.
 ---
 """
 

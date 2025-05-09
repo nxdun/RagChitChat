@@ -126,7 +126,8 @@ class OllamaLLM:
             "model": self.model,
             "prompt": prompt,
             "stream": False,
-            "system": self.system_prompt
+            "system": self.system_prompt,
+            "keep_alive": 0
         }
         
         response = requests.post(self.api_url, json=payload)
@@ -188,7 +189,8 @@ class OllamaLLM:
             "model": self.model,
             "prompt": reflection_prompt,
             "stream": False,
-            "system": self.system_prompt
+            "system": self.system_prompt,
+            "keep_alive": 0
         }
         
         response = requests.post(self.api_url, json=payload)
@@ -225,7 +227,8 @@ class OllamaLLM:
             "model": self.model,
             "prompt": structured_prompt,
             "stream": False,
-            "system": self.system_prompt
+            "system": self.system_prompt,
+            "keep_alive": 0
         }
         
         response = requests.post(self.api_url, json=payload)

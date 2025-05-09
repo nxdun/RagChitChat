@@ -20,6 +20,7 @@ from src.vector_store.chroma_store import ChromaVectorStore
 from src.retriever.haystack_retriever import HaystackRetriever
 from src.llm.ollama_client import OllamaLLM
 from src.interface.terminal_ui import TerminalUI
+from src.prompts.prompt_templates import NO_CONTEXT_MESSAGE
 
 # Configure logging
 logging.basicConfig(
@@ -112,9 +113,20 @@ class RagChitChat:
         Returns:
             Generated answer
         """
+        logger.info(f"Received question: {question}")
         # Retrieve relevant documents
-        context_docs = self.retriever.hybrid_retrieve(question, top_k=5)
+        context_docs = self.retriever.hybrid_retrieve(question, top_k=settings.TOP_K_RESULTS)
         
+        if not context_docs:
+            logger.info("No relevant documents found by retriever for the question.")
+            if progress_callback:
+                progress_callback("retrieval_complete", {"num_docs": 0})
+            # Return the specific message indicating no context was found.
+            # The UI will display this.
+            return NO_CONTEXT_MESSAGE
+            
+        logger.info(f"Retrieved {len(context_docs)} documents for context.")
+
         # Notify about retrieval completion if callback provided
         if progress_callback:
             progress_callback("retrieval_complete", {"num_docs": len(context_docs)})
@@ -136,6 +148,9 @@ class RagChitChat:
         try:
             # Create a new LLM instance with the new model
             new_llm = OllamaLLM(model=model_name)
+            
+            #unload running models
+            
             
             # Check if model is available
             available_models = new_llm.list_models()
