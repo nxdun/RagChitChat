@@ -1,12 +1,13 @@
-# RagChitChat: Retrieval Augmented Chat for CTSE Lecture Notes
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/) [![Ollama](https://img.shields.io/badge/LLM-Ollama-green)](https://ollama.ai) [![Haystack](https://img.shields.io/badge/RAG-Haystack-orange)](https://haystack.deepset.ai/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![RagChitChat Banner](https://img.shields.io/badge/RagChitChat-A%20Local%20RAG%20Chatbot-blue)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Ollama](https://img.shields.io/badge/LLM-Ollama-green)](https://ollama.ai)
-[![Haystack](https://img.shields.io/badge/RAG-Haystack-orange)](https://haystack.deepset.ai/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# RagChitChat: Retrieval Augmented Chat for PPT/PDF Notes
 
-A powerful Retrieval Augmented Generation (RAG) chatbot designed specifically for CTSE (Current Trends in Software Engineering) lecture notes. It combines local LLM capabilities with advanced document retrieval to provide accurate, context-aware answers about software engineering concepts.
+
+<div align="center">
+  <img src="./logo.png" alt="RagChitChat Logo" width="150"/>
+</div>
+
+A powerful Retrieval Augmented Generation (RAG) chatbot designed specifically for .ppt .pdf notes. It combines local LLM capabilities with advanced document retrieval to provide accurate, context-aware answers about software engineering concepts.
 
 ## 🌟 Features
 
@@ -280,10 +281,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgements
+##  Acknowledgements
 
 - [Ollama](https://ollama.ai/) for local LLM capabilities
 - [Haystack](https://haystack.deepset.ai/) for the RAG framework
 - [ChromaDB](https://www.trychroma.com/) for vector storage
 - [Rich](https://rich.readthedocs.io/) for the terminal UI
-- All open-source contributors to the libraries used

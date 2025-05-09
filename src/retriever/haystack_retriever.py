@@ -60,7 +60,10 @@ class HaystackRetriever:
         try:
             # Use BM25 retriever
             results = self.bm25_retriever.run(query=query, top_k=top_k)
-            documents = results["documents"]
+            documents = results.get("documents", [])  # Ensure documents is a list
+            if not documents:
+                logger.info("BM25 retriever found no documents.")
+                return []
             logger.info(f"Retrieved {len(documents)} documents using BM25 retriever")
             return documents
         except Exception as e:
@@ -78,17 +81,24 @@ class HaystackRetriever:
             List of document dicts
         """
         if self.vector_store is None:
-            logger.warning("Vector store not available for hybrid search")
-            return self._convert_to_dicts(self.retrieve(query, top_k))
+            logger.warning("Vector store not available for hybrid search. Falling back to BM25.")
+            bm25_results = self.retrieve(query, top_k)
+            if not bm25_results:
+                return []
+            return self._convert_to_dicts(bm25_results)
         
         try:
             # Get sparse results (BM25)
             sparse_results = self.retrieve(query, top_k)
-            sparse_docs = self._convert_to_dicts(sparse_results)
+            sparse_docs = self._convert_to_dicts(sparse_results) if sparse_results else []
             
             # Get dense results (Vector)
-            dense_docs = self.vector_store.query(query, top_k)
+            dense_docs = self.vector_store.query(query, top_k)  # Assuming vector_store.query returns an empty list if nothing is found or below threshold
             
+            if not sparse_docs and not dense_docs:
+                logger.info("Hybrid search (BM25 and Vector) found no documents.")
+                return []
+
             # Combine results (simple approach - could be improved)
             seen_contents = set()
             hybrid_results = []
@@ -112,6 +122,10 @@ class HaystackRetriever:
                     doc['retrieval_method'] = 'bm25'
                     hybrid_results.append(doc)
             
+            if not hybrid_results:
+                logger.info("Hybrid search yielded no combined results after filtering.")
+                return []
+            
             # Trim to top_k
             hybrid_results = hybrid_results[:top_k]
             
@@ -119,7 +133,11 @@ class HaystackRetriever:
             return hybrid_results
         except Exception as e:
             logger.error(f"Hybrid retrieval error: {str(e)}")
-            return self._convert_to_dicts(self.retrieve(query, top_k))
+            # Fallback to BM25 if hybrid fails, and ensure it handles empty results
+            bm25_fallback_results = self.retrieve(query, top_k)
+            if not bm25_fallback_results:
+                return []
+            return self._convert_to_dicts(bm25_fallback_results)
     
     @staticmethod
     def _convert_to_dicts(documents: List[Document]) -> List[Dict[str, Any]]:
