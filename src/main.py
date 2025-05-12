@@ -37,7 +37,7 @@ class RagChitChat:
                  data_dir: str = "data",
                  processed_dir: str = "processed",
                  db_dir: str = "chroma_db",
-                 model_name: str = "mistral:7b-instruct-v0.3-q4_1"):
+                 model_name: str = settings.DEFAULT_MODEL) -> None:
         """Initialize the RAG chatbot
         
         Args:
