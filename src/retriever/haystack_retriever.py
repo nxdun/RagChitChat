@@ -3,6 +3,7 @@ Haystack retriever integration for the RAG pipeline
 """
 import logging
 from typing import List, Dict, Any, Optional
+import urllib3
 
 from haystack.components.retrievers import InMemoryBM25Retriever
 from haystack.dataclasses import Document
@@ -21,12 +22,30 @@ class HaystackRetriever:
         Args:
             vector_store: Optional ChromaVectorStore to use for retrieval
         """
-        self.vector_store = vector_store
+        # Force disable telemetry and warnings before initializing Haystack components
+        import os
+        os.environ["HAYSTACK_TELEMETRY_ENABLED"] = "False"
         
+        # Silence urllib3 warnings
+        urllib3.disable_warnings()
+        
+        # Disable PostHog warnings by patching
+        try:
+            import posthog
+            # Replace PostHog's capture method with a no-op function
+            posthog.capture = lambda *args, **kwargs: None
+            # Set the client as disabled
+            if hasattr(posthog, 'disabled'):
+                posthog.disabled = True
+        except ImportError:
+            pass
+        
+        
+        self.vector_store = vector_store
+
         # ! This is an in-memory approach - for larger datasets consider a persistent store
         self.document_store = InMemoryDocumentStore()
         self.bm25_retriever = InMemoryBM25Retriever(document_store=self.document_store)
-    
     def add_documents(self, documents: List[Dict[str, Any]]) -> None:
         """Add documents to the retriever
         

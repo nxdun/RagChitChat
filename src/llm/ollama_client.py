@@ -113,6 +113,21 @@ class OllamaLLM:
             logger.error(f"Error generating from Ollama: {str(e)}")
             return f"# Error\n\n{str(e)}\n\nPlease try again or check the logs for more information."
     
+    def _strip_think_blocks(self, text: str) -> str:
+        """Remove <think></think> blocks from the response
+        
+        Args:
+            text: Original response text
+            
+        Returns:
+            Cleaned response with thinking blocks removed
+        """
+        # Remove all content between <think> and </think> tags
+        cleaned_text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
+        # Clean up any extra whitespace that might result
+        cleaned_text = re.sub(r'\n\s*\n', '\n\n', cleaned_text)
+        return cleaned_text.strip()
+    
     def _simple_generate(self, prompt: str) -> str:
         """Generate response for a simple prompt without RAG context
         
@@ -133,7 +148,8 @@ class OllamaLLM:
         response = requests.post(self.api_url, json=payload)
         
         if response.status_code == 200:
-            return response.json()["response"]
+            raw_response = response.json()["response"]
+            return self._strip_think_blocks(raw_response)
         else:
             logger.error(f"Ollama API error: {response.status_code} - {response.text}")
             return f"Error: Failed to generate response from Ollama (Status {response.status_code})"
@@ -160,7 +176,8 @@ class OllamaLLM:
         response = requests.post(self.api_url, json=payload)
         
         if response.status_code == 200:
-            return response.json()["response"]
+            raw_response = response.json()["response"]
+            return self._strip_think_blocks(raw_response)
         else:
             logger.error(f"Ollama API error: {response.status_code} - {response.text}")
             return f"Error: Failed to generate response from Ollama (Status {response.status_code})"
@@ -196,7 +213,7 @@ class OllamaLLM:
         response = requests.post(self.api_url, json=payload)
         
         if response.status_code == 200:
-            reflection_output = response.json()["response"]
+            reflection_output = self._strip_think_blocks(response.json()["response"])
             
             # Extract just the improved answer part
             if "## Improved Answer" in reflection_output:
@@ -234,7 +251,8 @@ class OllamaLLM:
         response = requests.post(self.api_url, json=payload)
         
         if response.status_code == 200:
-            return response.json()["response"]
+            raw_response = response.json()["response"]
+            return self._strip_think_blocks(raw_response)
         else:
             # Fallback to standard RAG if structured generation fails
             logger.error(f"Structured generation failed: {response.status_code}")
