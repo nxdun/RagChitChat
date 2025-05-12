@@ -9,6 +9,18 @@
 
 A powerful Retrieval Augmented Generation (RAG) chatbot designed specifically for .ppt .pdf notes. It combines local LLM capabilities with advanced document retrieval to provide accurate, context-aware answers about software engineering concepts.
 
+demo : [youtube DEMO](https://youtu.be/nib7Fl8YuHc)
+
+<div align="center">
+  <table>
+    <tr>
+      <td><img src="./screenshots/landing.png" alt="Screenshot UI" style="width:100%; height:auto;"/></td>
+    </tr>
+    <tr>
+      <td><img src="./screenshots/sample answer.png" alt="Screen Shot response" style="width:100%; height:auto;"/></td>
+    </tr>
+  </table>
+</div>
 ## 🌟 Features
 
 - **📚 Document Processing**: Intelligent handling of various file formats

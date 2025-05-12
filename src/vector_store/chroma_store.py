@@ -7,6 +7,7 @@ from typing import List, Dict, Any, Optional
 
 import chromadb
 from chromadb.utils import embedding_functions
+from chromadb.config import Settings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,14 +34,18 @@ class ChromaVectorStore:
         os.makedirs(self.persist_directory, exist_ok=True)
         
         try:
-            self.client = chromadb.PersistentClient(path=self.persist_directory)
+            # Create client with telemetry disabled
+            self.client = chromadb.PersistentClient(
+                path=self.persist_directory,
+                settings=Settings(anonymized_telemetry=False)
+            )
             # Get or create collection
             self.collection = self.client.get_or_create_collection(
                 name=self.collection_name,
                 embedding_function=self.embedding_function,
                 metadata={"description": "CTSE Lecture Notes"}
             )
-            logger.info(f"ChromaDB initialized at {self.persist_directory}")
+            logger.info(f"ChromaDB initialized at {self.persist_directory} (telemetry disabled)")
         except Exception as e:
             logger.error(f"Failed to initialize ChromaDB: {str(e)}")
             raise
