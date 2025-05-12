@@ -3,12 +3,40 @@ Configuration settings for RagChitChat
 """
 import os
 import logging
+import urllib3
+import requests
 # Disable Haystack telemetry
 os.environ["HAYSTACK_TELEMETRY_ENABLED"] = "False"
 
-for logger_name in logging.root.manager.loggerDict:
-    logging.getLogger(logger_name).setLevel(logging.CRITICAL)
-# Disable Haystack telemetry via environment variable
+# Disable all loggers related to telemetry
+def disable_loggers():
+    """Completely disable problematic loggers"""
+    for logger_name in [
+        "backoff", 
+        "urllib3.connectionpool",
+        "httpx",
+        "elasticsearch",
+        "filelock",
+        "httpcore",
+        "requests",
+        "src.retriever.haystack_retriever",
+        "haystack.document_stores.in_memory.document_store",     
+        "__main__",
+    ]:
+        logger = logging.getLogger(logger_name)
+        logger.setLevel(logging.CRITICAL)
+        logger.propagate = False
+        # Remove all handlers
+        if logger.hasHandlers():
+            for handler in logger.handlers[:]:
+                logger.removeHandler(handler)
+
+# Silence specific warnings
+urllib3.disable_warnings()
+requests.packages.urllib3.disable_warnings()
+
+# Execute logger disabling
+disable_loggers()
 
 # Paths configuration
 DATA_DIR = os.environ.get("RAGCHITCHAT_DATA_DIR", "data")
@@ -17,7 +45,7 @@ DB_DIR = os.environ.get("RAGCHITCHAT_DB_DIR", "chroma_db")
 
 # Ollama configuration
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
-DEFAULT_MODEL = os.environ.get("RAGCHITCHAT_MODEL", "mistral:7b-instruct-v0.3-q4_1")
+DEFAULT_MODEL = os.environ.get("RAGCHITCHAT_MODEL", "deepseek-r1:7b-qwen-distill-q4_K_M")
 
 # Document processing
 CHUNK_SIZE = int(os.environ.get("RAGCHITCHAT_CHUNK_SIZE", "1000"))
