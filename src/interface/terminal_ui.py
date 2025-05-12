@@ -99,9 +99,12 @@ class TerminalUI:
               |___/                                           
         """
         
-        self.console.print(Panel(f"[bold {self.theme['accent']}]{logo}[/]", 
-                               border_style=self.theme["accent"],
-                               subtitle="[white]Your AI assistant for CTSE Lecture Notes[/]"))
+        self.console.print(Align(
+            Panel(f"[bold {self.theme['accent']}]{logo}[/]", 
+              border_style=self.theme["accent"],
+              subtitle="[white]Your AI assistant for CTSE Lecture Notes[/]"),
+            align="center"
+        ))
     
     def show_welcome(self):
         """Display welcome message and instructions"""
@@ -192,15 +195,15 @@ class TerminalUI:
 RagChitChat is a Retrieval-Augmented Generation (RAG) chatbot designed to help students
 learn about Current Trends in Software Engineering. It uses:
 
-• [bold]Local LLM[/bold] via [link=https://ollama.ai]Ollama[/link] for AI inference
-• [bold]RAG Pipeline[/bold] with Haystack for intelligent document retrieval
-• [bold]Vector Database[/bold] using ChromaDB for semantic search
-• [bold]Rich UI[/bold] in the terminal for a pleasant user experience
+- **Local LLM** via [Ollama](https://ollama.ai) for AI inference
+- **RAG Pipeline** with Haystack for intelligent document retrieval
+- **Vector Database** using ChromaDB for semantic search
+- **Rich UI** in the terminal for a pleasant user experience
 
 This project demonstrates how generative AI can be applied to educational contexts
 while maintaining privacy by keeping all operations local.
 
-[dim italic]Created by Nadun for the CTSE module assignment[/dim italic]
+*Created by Nadun for the CTSE module assignment*
         """
         
         self.console.print(Panel(

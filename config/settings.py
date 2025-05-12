@@ -45,9 +45,9 @@ DB_DIR = os.environ.get("RAGCHITCHAT_DB_DIR", "chroma_db")
 
 # Ollama configuration
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
-DEFAULT_MODEL = os.environ.get("RAGCHITCHAT_MODEL", "deepseek-r1:7b-qwen-distill-q4_K_M")
+DEFAULT_MODEL = os.environ.get("RAGCHITCHAT_MODEL", "deepseek-r1:14b")
 
-# Document processing
+# Document processingv
 CHUNK_SIZE = int(os.environ.get("RAGCHITCHAT_CHUNK_SIZE", "1000"))
 CHUNK_OVERLAP = int(os.environ.get("RAGCHITCHAT_CHUNK_OVERLAP", "200"))
 
